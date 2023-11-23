@@ -60,7 +60,7 @@ PROTOCOL_VERSION            = 2.0
 BAUDRATE                = 57600
 
 # Factory default ID of all DYNAMIXEL is 1
-DXL_ID                      = 1
+DXL_ID                      = 3
 
 # Use the actual port assigned to the U2D2.
 # ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
