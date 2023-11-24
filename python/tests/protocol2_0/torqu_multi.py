@@ -32,6 +32,7 @@
 #  Maintainer : Zerom, Will Son
 # *******************************************************************************
 
+import time
 import os
 
 if os.name == 'nt':
@@ -141,9 +142,11 @@ else:
     quit()
 
 # Enable Dynamixel Torque
-dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
-dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID+1, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
-dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID+2, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+torque_value = 100
+dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, torque_value)
+dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID+1, ADDR_TORQUE_ENABLE, torque_value)
+dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID+2, ADDR_TORQUE_ENABLE, torque_value)
+
 
 while 1:
   # Read present position
@@ -159,12 +162,21 @@ while 1:
       print("%s" % packetHandler.getRxPacketError(dxl_error))
 
   print()
-  print("[ID:%03d]  PresPos:%03d" % (DXL_ID, dxl_present_position))
-  print("[ID:%03d]  PresPos:%03d" % (DXL_ID+1, dxl_present_position2))
-  print("[ID:%03d]  PresPos:%03d" % (DXL_ID+2, dxl_present_position3))
+
+#[ID:001]  PresPos:
+  offset1 = 89.912109
+#[ID:002]  PresPos:
+  offset2 = 175.869141
+#[ID:003]  PresPos:
+  offset3 = 70.224609
+
+  print("[ID:%03d]  PresPos:%04f" % (DXL_ID, dxl_present_position / 4096.0 * 360 - offset1))
+  print("[ID:%03d]  PresPos:%04f" % (DXL_ID+1, dxl_present_position2 / 4096.0 * 360 - offset2))
+  print("[ID:%03d]  PresPos:%04f" % (DXL_ID+2, dxl_present_position3 / 4096.0 * 360 - offset3))
 
   if not abs(dxl_goal_position[index] - dxl_present_position) > DXL_MOVING_STATUS_THRESHOLD:
       break
+  time.sleep(0.01)
 
 
 # Disable Dynamixel Torque
